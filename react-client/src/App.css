@@ -1,0 +1,143 @@
+.App {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+  background-color: #f8f9fa;
+  padding: 10px 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Button styles */
+.App button {
+  cursor: pointer;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  margin: 0 5px;
+  outline: none;
+}
+
+.App button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.App button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+}
+
+/* Specific button colors */
+.App button.add, .App button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.App button.edit {
+  background-color: #2196F3;
+  color: white;
+}
+
+.App button.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.App button.logout {
+  background-color: #2196F3;
+  color: white;
+}
+
+/* Hover effects for specific buttons */
+.App button.add:hover, .App button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.App button.edit:hover {
+  background-color: #1e87db;
+}
+
+.App button.delete:hover {
+  background-color: #da190b;
+}
+
+.App button.logout:hover {
+  background-color: #1e87db;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: 20px auto;
+}
+
+form input {
+  margin-bottom: 10px;
+  padding: 5px;
+}
