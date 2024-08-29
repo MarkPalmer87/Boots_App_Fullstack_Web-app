@@ -4,10 +4,10 @@
 const getToken = () => localStorage.getItem('token');
 
 // Action to fetch products from an API
-export const fetchProducts = () => async (dispatch) => {
-    console.log('fetchProducts action called');
+export const fetchProducts = (searchParams = '') => async (dispatch) => {
+    console.log('fetchProducts action called with params:', searchParams);
     try {
-        const response = await fetch('http://localhost:5000/products', {
+        const response = await fetch(`http://localhost:5000/products?${searchParams}`, {
             headers: {
                 'Authorization': `Bearer ${getToken()}`
             }

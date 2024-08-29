@@ -3,7 +3,20 @@ import { getProducts, addProduct, editProduct, removeProduct, getProductById } f
 
 const router = express.Router();
 
-router.get('/', getProducts);
+// Update the getProducts route to handle search parameter
+router.get('/', async (req, res) => {
+    try {
+        const { search } = req.query;
+        console.log('Search query received:', search); // Add this log
+        const products = await getProducts(req, res);
+        console.log('Products returned:', products); // Add this log
+        res.json(products);
+    } catch (error) {
+        console.error('Error in GET /products:', error); // Add this log
+        res.status(500).json({ message: 'Error fetching products', error: error.message });
+    }
+});
+
 router.post('/', addProduct);
 router.put('/:id', editProduct);
 router.delete('/:id', removeProduct);

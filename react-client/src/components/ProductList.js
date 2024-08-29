@@ -3,22 +3,31 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts, removeItem, editItem, addItem } from '../actions/dataActions';
 import ProductForm from './ProductForm';
 import { Navigate } from 'react-router-dom';
+import SearchAndFilter from './SearchAndFilter';
 
 const ProductList = () => {
   const [editingProduct, setEditingProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const products = useSelector(state => state.data.products);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    const fetchData = async () => {
+      setIsLoading(true);
+      await dispatch(fetchProducts());
+      setIsLoading(false);
+    };
+    fetchData();
   }, [dispatch]);
+
+  console.log('Current products in ProductList:', JSON.stringify(products, null, 2));
 
   const handleDelete = (id) => {
     dispatch(removeItem(id));
   };
 
   const handleEdit = (product) => {
-    console.log('Edit button clicked for product:', product);
     setEditingProduct(product);
   };
 
@@ -31,36 +40,56 @@ const ProductList = () => {
     setEditingProduct(null);
   };
 
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    dispatch(fetchProducts(`search=${term}`));
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.color.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Product List</h2>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Brand</th>
-            <th>Color</th>
-            <th>Price</th>
-            <th>Sizes</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map(product => (
-            <tr key={product.id}>
-              <td>{product.name}</td>
-              <td>{product.brand}</td>
-              <td>{product.color}</td>
-              <td>${product.price}</td>
-              <td>{product.sizes ? product.sizes.join(', ') : ''}</td>
-              <td>
-                <button className='edit' onClick={() => handleEdit(product)}>Edit</button>
-                <button className='delete' onClick={() => handleDelete(product.id)}>Delete</button>
-              </td>
+      <SearchAndFilter onSearch={handleSearch} />
+      {filteredProducts.length === 0 ? (
+        <p>No products found.</p>
+      ) : (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Brand</th>
+              <th>Color</th>
+              <th>Price</th>
+              <th>Sizes</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredProducts.map(product => (
+              <tr key={product.id}>
+                <td>{product.name}</td>
+                <td>{product.brand}</td>
+                <td>{product.color}</td>
+                <td>${product.price}</td>
+                <td>{product.sizes ? product.sizes.join(', ') : ''}</td>
+                <td>
+                  <button className='edit' onClick={() => handleEdit(product)}>Edit</button>
+                  <button className='delete' onClick={() => handleDelete(product.id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       <ProductForm product={editingProduct} onSubmit={handleSubmit} />
     </div>
   );
