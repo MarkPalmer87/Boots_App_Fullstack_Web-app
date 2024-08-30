@@ -4,8 +4,13 @@ import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import productsRouter from './routes/products.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import { authenticateToken } from './middleware/authMiddleware.js';
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Ideally, use an environment variable
+
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 
@@ -20,28 +25,11 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Secret key for JWT (use a strong, unique key in production)
-const JWT_SECRET = 'your_jwt_secret';
-
 // Middleware to make pool available in routes
 app.use((req, res, next) => {
   req.pool = pool;
   next();
 });
-
-// Middleware to verify JWT token
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (token == null) return res.sendStatus(401);
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-};
 
 // Register route
 app.post('/register', async (req, res) => {
@@ -75,16 +63,18 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Use the products routes, protected by authenticateToken
+// Protected routes
 app.use('/products', authenticateToken, productsRouter);
-
-app.get('/', (req, res) => {
-  res.send("Server is running");
-});
+app.use('/api/reviews', authenticateToken, reviewRoutes);
 
 // Verify token route
-app.get('/verify-token', authenticateToken, (req, res) => {
-  res.json({ id: req.user.id, username: req.user.username });
+app.post('/verify-token', authenticateToken, (req, res) => {
+  res.json({ valid: true, user: { id: req.user.id, username: req.user.username } });
+});
+
+// Basic route
+app.get('/', (req, res) => {
+  res.send("Server is running");
 });
 
 // Error handling middleware
@@ -93,7 +83,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
 
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });

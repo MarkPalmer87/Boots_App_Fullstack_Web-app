@@ -5,6 +5,7 @@ import { checkAuthStatus } from './actions/authActions';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import ProductList from './components/ProductList';
+import Reviews from './components/Reviews';
 import CreateAccount from './components/CreateAccount';
 import Login from './components/Login';
 import './App.css';
@@ -32,6 +33,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProductList />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/reviews/:bootId" 
+            element={
+              <ProtectedRoute>
+                <Reviews />
               </ProtectedRoute>
             } 
           />

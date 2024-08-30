@@ -1,28 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link, Navigate } from 'react-router-dom';
 import { fetchProducts, removeItem, editItem, addItem } from '../actions/dataActions';
 import ProductForm from './ProductForm';
-import { Navigate } from 'react-router-dom';
+import ReviewList from './ReviewList';
+import { fetchReviewCounts } from '../actions/reviewActions';
+import AddReviewForm from './AddReviewForm';
 import SearchAndFilter from './SearchAndFilter';
 
 const ProductList = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedBoot, setSelectedBoot] = useState(null);
+  const [isAddingReview, setIsAddingReview] = useState(false);
   const products = useSelector(state => state.data.products);
-  console.log('Products in ProductList:', products);
   const dispatch = useDispatch();
+  const reviewCounts = useSelector(state => state.reviews.counts);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      await dispatch(fetchProducts());
-      setIsLoading(false);
+      console.log('ProductList: Fetching products and review counts');
+      try {
+        await Promise.all([
+          dispatch(fetchProducts()),
+          dispatch(fetchReviewCounts())
+        ]);
+        console.log('ProductList: Data fetched successfully');
+      } catch (error) {
+        console.error('ProductList: Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
-  }, [dispatch]);
+  }, [dispatch]); // Remove reviewCounts from the dependency array
 
-  console.log('Current products in ProductList:', JSON.stringify(products, null, 2));
+  useEffect(() => {
+    console.log('ProductList: Current review counts:', reviewCounts);
+    console.log('ProductList: Current products:', products);
+  }, [reviewCounts, products]);
 
   const handleDelete = (id) => {
     dispatch(removeItem(id));
@@ -44,6 +62,16 @@ const ProductList = () => {
   const handleSearch = (term) => {
     setSearchTerm(term);
     dispatch(fetchProducts(`search=${term}`));
+  };
+
+  const handleReviewClick = (bootId) => {
+    setSelectedBoot(bootId);
+    setIsAddingReview(false);
+  };
+
+  const handleAddReviewClick = (bootId) => {
+    setSelectedBoot(bootId);
+    setIsAddingReview(true);
   };
 
   if (isLoading) {
@@ -85,11 +113,27 @@ const ProductList = () => {
                 <td>
                   <button className='edit' onClick={() => handleEdit(product)}>Edit</button>
                   <button className='delete' onClick={() => handleDelete(product.id)}>Delete</button>
+                  {(reviewCounts[product.id] > 0) ? (
+                    <Link to={`/reviews/${product.id}`}>
+                      Reviews ({reviewCounts[product.id]})
+                    </Link>
+                  ) : (
+                    <span>No reviews</span>
+                  )}
+                  <button onClick={() => handleAddReviewClick(product.id)}>Add Review</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+      {isAddingReview && (
+        <div className="add-review-section">
+          <AddReviewForm 
+            bootId={selectedBoot} 
+            onClose={() => setIsAddingReview(false)} 
+          />
+        </div>
       )}
       <ProductForm product={editingProduct} onSubmit={handleSubmit} />
     </div>

@@ -82,5 +82,7 @@ export const checkAuthStatus = () => async (dispatch) => {
             localStorage.removeItem('token');
             dispatch({ type: 'LOGOUT' });
         }
+    } else {
+        dispatch({ type: 'LOGOUT' });
     }
 };
