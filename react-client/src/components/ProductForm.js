@@ -6,15 +6,17 @@ const ProductForm = ({ product, onSubmit }) => {
         brand: '',
         color: '',
         price: '',
-        sizes: ''
+        sizes: []
     });
 
     useEffect(() => {
         if (product) {
             setFormData({
-                ...product,
-                price: product.price.toString(),
-                sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : product.sizes
+                name: product.name || '',
+                brand: product.brand || '',
+                color: product.color || '',
+                price: product.price ? product.price.toString() : '',
+                sizes: Array.isArray(product.sizes) ? product.sizes : []
             });
         } else {
             setFormData({
@@ -22,13 +24,24 @@ const ProductForm = ({ product, onSubmit }) => {
                 brand: '',
                 color: '',
                 price: '',
-                sizes: ''
+                sizes: []
             });
         }
     }, [product]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
+
+    const handleSizesChange = (e) => {
+        setFormData(prevData => ({
+            ...prevData,
+            sizes: e.target.value
+        }));
     };
 
     const handleSubmit = (e) => {
@@ -36,10 +49,9 @@ const ProductForm = ({ product, onSubmit }) => {
         const submittedData = {
             ...formData,
             price: parseFloat(formData.price),
-            sizes: formData.sizes.split(',').map(size => size.trim()).filter(size => size !== '')
+            sizes: formData.sizes.split(',').map(size => size.trim()).filter(size => size !== '').map(Number).filter(size => !isNaN(size))
         };
         onSubmit(submittedData);
-        setFormData({ name: '', brand: '', color: '', price: '', sizes: '' });
     };
 
     return (
@@ -75,15 +87,14 @@ const ProductForm = ({ product, onSubmit }) => {
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="Price"
-                step="0.01"
                 required
             />
             <input
                 type="text"
                 name="sizes"
-                value={formData.sizes}
-                onChange={handleChange}
-                placeholder="Sizes (comma-separated, e.g., 7, 7.5, 8)"
+                value={Array.isArray(formData.sizes) ? formData.sizes.join(', ') : formData.sizes}
+                onChange={handleSizesChange}
+                placeholder="Sizes (comma-separated)"
                 required
             />
             <button type="submit">{product ? 'Update' : 'Add'} Product</button>

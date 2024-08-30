@@ -10,6 +10,7 @@ const ProductList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const products = useSelector(state => state.data.products);
+  console.log('Products in ProductList:', products);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const ProductList = () => {
                 <td>{product.brand}</td>
                 <td>{product.color}</td>
                 <td>${product.price}</td>
-                <td>{product.sizes ? product.sizes.join(', ') : ''}</td>
+                <td>{Array.isArray(product.sizes) ? product.sizes.join(', ') : (product.sizes || '')}</td>
                 <td>
                   <button className='edit' onClick={() => handleEdit(product)}>Edit</button>
                   <button className='delete' onClick={() => handleDelete(product.id)}>Delete</button>

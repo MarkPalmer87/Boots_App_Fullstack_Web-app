@@ -1,21 +1,31 @@
 export const getProducts = async (req, res) => {
     try {
         const { search } = req.query;
-        console.log('Search query in controller:', search); // Add this log
-        let query = 'SELECT * FROM leather_boots';
+        let query = `
+            SELECT l.*, GROUP_CONCAT(bs.size ORDER BY bs.size) as sizes
+            FROM leather_boots l
+            LEFT JOIN boot_sizes bs ON l.id = bs.boot_id
+        `;
         let params = [];
 
         if (search) {
-            query += ' WHERE name LIKE ? OR brand LIKE ? OR color LIKE ?';
+            query += ' WHERE l.name LIKE ? OR l.brand LIKE ? OR l.color LIKE ?';
             params = [`%${search}%`, `%${search}%`, `%${search}%`];
         }
 
+        query += ' GROUP BY l.id';
+
         const [products] = await req.pool.query(query, params);
-        console.log('Products found:', products); // Add this log
-        return products; // Return the products instead of sending the response
+        console.log('Raw products from database:', products);
+        const processedProducts = products.map(product => ({
+            ...product,
+            sizes: product.sizes ? product.sizes.split(',').map(Number) : []
+        }));
+        console.log('Processed products:', processedProducts);
+        return processedProducts;
     } catch (error) {
         console.error('Error fetching products:', error);
-        throw error; // Throw the error to be caught in the route handler
+        throw error;
     }
 };
 

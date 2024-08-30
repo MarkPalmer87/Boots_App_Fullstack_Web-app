@@ -17,10 +17,10 @@ const Navbar = () => {
     return (
         <nav>
             <ul>
-                <li><Link to="/">Home</Link></li>
                 {isAuthenticated ? (
                     <>
-                        <li>Welcome, {user ? user.username : 'Guest'}</li>
+                        <li><Link to="/">Home</Link></li>
+                        <li>Welcome, {user ? user.username : 'User'}!</li>
                         <li><button className='logout' onClick={handleLogout}>Logout</button></li>
                     </>
                 ) : (

@@ -7,37 +7,19 @@ import Home from './components/Home';
 import ProductList from './components/ProductList';
 import CreateAccount from './components/CreateAccount';
 import Login from './components/Login';
-import ProductForm from './components/ProductForm';
-import './App.css';  // Make sure to import the CSS file
+import './App.css';
 
-const ProtectedProductList = ({ onEdit }) => {
+const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <ProductList onEdit={onEdit} />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 function App() {
-  const [editingProduct, setEditingProduct] = useState(null);
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
   useEffect(() => {
     dispatch(checkAuthStatus());
   }, [dispatch]);
-
-  const handleEdit = (product) => {
-    console.log('Editing product:', product);
-    setEditingProduct(product);
-  };
-
-  const handleSubmit = () => {
-    console.log('Form submitted, resetting editingProduct');
-    setEditingProduct(null);
-  };
 
   return (
     <Router>
@@ -48,12 +30,9 @@ function App() {
           <Route 
             path="/products" 
             element={
-              <>
-                <ProtectedProductList onEdit={handleEdit} />
-                {isAuthenticated && (
-                  <ProductForm product={editingProduct} onSubmit={handleSubmit} />
-                )}
-              </>
+              <ProtectedRoute>
+                <ProductList />
+              </ProtectedRoute>
             } 
           />
           <Route path="/create-account" element={<CreateAccount />} />

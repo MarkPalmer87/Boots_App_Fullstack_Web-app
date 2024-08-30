@@ -1,29 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import ProductList from './ProductList';
 
 const Home = () => {
-	const [editingProduct, setEditingProduct] = useState(null);
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
-	const handleEdit = (product) => {
-		console.log('Editing product:', product);
-		setEditingProduct(product);
-	};
-
-	const handleSubmit = () => {
-		console.log('Form submitted, resetting editingProduct');
-		setEditingProduct(null);
-	};
-
-	if (!isAuthenticated) {
-		return <h1>Leather Boots App</h1>;
+	if (isAuthenticated) {
+		return <Navigate to="/products" replace />;
 	}
 
 	return (
-		<div>
-			<h1>Leather Boots App</h1>
-			<ProductList onEdit={handleEdit} editingProduct={editingProduct} onSubmit={handleSubmit} />
+		<div className="home landing">
+			<h1>Welcome to the Boots App!</h1>
+			<p>Please log in, or create an account to use the app.</p>
+			<div className="cta-buttons">
+				<Link to="/login" className="btn btn-primary">Log In</Link>
+				<Link to="/create-account" className="btn btn-secondary">Create Account</Link>
+			</div>
 		</div>
 	);
 };
