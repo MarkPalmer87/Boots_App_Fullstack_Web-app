@@ -16,7 +16,7 @@ const ProductForm = ({ product, onSubmit }) => {
                 brand: product.brand || '',
                 color: product.color || '',
                 price: product.price ? product.price.toString() : '',
-                sizes: Array.isArray(product.sizes) ? product.sizes : []
+                sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : product.sizes
             });
         } else {
             setFormData({
@@ -24,7 +24,7 @@ const ProductForm = ({ product, onSubmit }) => {
                 brand: '',
                 color: '',
                 price: '',
-                sizes: []
+                sizes: ''
             });
         }
     }, [product]);
@@ -34,13 +34,6 @@ const ProductForm = ({ product, onSubmit }) => {
         setFormData(prevData => ({
             ...prevData,
             [name]: value
-        }));
-    };
-
-    const handleSizesChange = (e) => {
-        setFormData(prevData => ({
-            ...prevData,
-            sizes: e.target.value
         }));
     };
 
@@ -92,8 +85,8 @@ const ProductForm = ({ product, onSubmit }) => {
             <input
                 type="text"
                 name="sizes"
-                value={Array.isArray(formData.sizes) ? formData.sizes.join(', ') : formData.sizes}
-                onChange={handleSizesChange}
+                value={formData.sizes}
+                onChange={handleChange}
                 placeholder="Sizes (comma-separated)"
                 required
             />
