@@ -36,28 +36,30 @@ nav ul {
   padding: 0;
   display: flex;
   justify-content: space-around;
-  background-color: #f8f9fa;
+  background-color: var(--color-secondary);
   padding: 10px 0;
 }
 
 nav ul li a {
   text-decoration: none;
-  color: #333;
+  color: var(--color-primary);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: var(--color-secondary);
 }
 
 th, td {
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-quaternary);
   padding: 8px;
   text-align: left;
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: var(--color-tertiary);
+  color: var(--color-secondary);
 }
 
 /* Button styles */
@@ -85,8 +87,8 @@ th {
 
 /* Specific button colors */
 .App button.add, .App button[type="submit"] {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 .App button.edit {
@@ -106,7 +108,7 @@ th {
 
 /* Hover effects for specific buttons */
 .App button.add:hover, .App button[type="submit"]:hover {
-  background-color: #45a049;
+  background-color: var(--color-tertiary);
 }
 
 .App button.edit:hover {
@@ -126,6 +128,9 @@ form {
   flex-direction: column;
   max-width: 500px;
   margin: 20px auto;
+  background-color: var(--color-secondary);
+  padding: 20px;
+  border-radius: 5px;
 }
 
 form input {
@@ -136,7 +141,7 @@ form input {
 .home.landing {
   text-align: center;
   padding: 50px 20px;
-  background-color: #f8f9fa;
+  background-color: var(--color-background);
   min-height: calc(100vh - 60px); /* Adjust based on your navbar height */
   display: flex;
   flex-direction: column;
@@ -146,13 +151,13 @@ form input {
 
 .home.landing h1 {
   font-size: 2.5em;
-  color: #333;
+  color: var(--color-primary);
   margin-bottom: 20px;
 }
 
 .home.landing p {
   font-size: 1.2em;
-  color: #666;
+  color: var(--color-five);
   margin-bottom: 30px;
 }
 
@@ -170,28 +175,33 @@ form input {
 }
 
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 .btn-secondary {
-  background-color: #6c757d;
-  color: white;
+  background-color: var(--color-tertiary);
+  color: var(--color-secondary);
 }
 
 .btn:hover {
   opacity: 0.9;
 }
-
-/*
+body, #root, .App {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
 :root {
-  --color-primary: #73040f;
-  --color-secondary: #f8f2f3;
-  --color-tertiary: #500404;
-  --color-quaternary: #aba3a4;
-  --color-five: #696566;
-} 
-  */
+  --color-background: #e0e5dd; /* Slightly darker sage green background */
+  --color-primary: #2c4a2c; /* Darker forest green */
+  --color-secondary: #f5f7f3; /* Off-white with a hint of green */
+  --color-tertiary: #5a7d4f; /* Darker medium green */
+  --color-quaternary: #b8c5aa; /* Muted pale green */
+  --color-five: #1e2f1e; /* Very dark green for headings */
+  --color-text: #3e2a1e; /* Dark brown for main text */
+  --color-text-light: #5e4636; /* Lighter brown for secondary text */
+}
+
 .header-logo {
   max-width: 350px;
   animation: fadeIn 1s ease-in;
@@ -199,19 +209,19 @@ form input {
 }
 
 .logo-container {
-    margin-top: 10px;
-    text-align: center;
+  margin-top: 10px;
+  text-align: center;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .logo {
-    max-width: 350px;
-    height: auto;
-    animation: fadeIn .5s ease-in;
+  max-width: 350px;
+  height: auto;
+  animation: fadeIn .5s ease-in;
 }
 
 .product-list-container {
@@ -260,7 +270,7 @@ form button {
   width: 100%;
   padding: 8px 16px;
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-secondary);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -298,8 +308,8 @@ form button:hover {
 }
 
 .review-list .review-item {
-  background-color: #f8f9fa !important;
-  border: 1px solid #e9ecef !important;
+  background-color: var(--color-secondary) !important;
+  border: 1px solid var(--color-quaternary) !important;
   border-radius: 8px !important;
   padding: 15px !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
@@ -317,7 +327,7 @@ form button:hover {
 
 .review-list .review-item .review-meta {
   font-size: 0.9em !important;
-  color: #6c757d !important;
+  color: var(--color-five) !important;
 }
 
 /* If you have a delete button for reviews */
@@ -325,7 +335,7 @@ form button:hover {
   margin-top: 10px !important;
   padding: 5px 10px !important;
   background-color: var(--color-primary) !important;
-  color: white !important;
+  color: var(--color-secondary) !important;
   border: none !important;
   border-radius: 4px !important;
   cursor: pointer !important;

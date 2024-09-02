@@ -23,11 +23,11 @@ const ReviewList = ({ bootId }) => {
             <h2>Reviews for Boot {bootId}</h2>
             {reviews.map(review => (
                 <div key={review.id} className="review-item">
-                    <h3>{review.title}</h3>
+                    <h3>{review.username}'s Review</h3> {/*changed user_name to username*/}
                     <p>{review.content}</p>
                     <div className="review-meta">
                         <span>Rating: {review.rating}/5</span>
-                        <span> | By: {review.user_name}</span>
+                        <span> | By: {review.username}</span>  {/*changed user_name to username*/}
                         <span> | Date: {new Date(review.created_at).toLocaleDateString()}</span>
                     </div>
                 </div>

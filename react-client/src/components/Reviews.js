@@ -28,7 +28,7 @@ const Reviews = () => {
                 ) : (
                     reviews.map(review => (
                         <div key={review.id} className="review-item">
-                            <h3>Review #{review.id}</h3>
+                            <h3>{review.username}'s Review</h3>
                             <p>{review.comment}</p>
                             <div className="review-meta">
                                 <span>Rating: {review.rating}/5</span>
