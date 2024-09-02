@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { fetchProducts, removeItem, editItem, addItem } from '../actions/dataActions';
 import ProductForm from './ProductForm';
-import ReviewList from './ReviewList';
 import { fetchReviewCounts } from '../actions/reviewActions';
 import AddReviewForm from './AddReviewForm';
 import SearchAndFilter from './SearchAndFilter';
@@ -12,10 +11,12 @@ import logo from '../images/Boots.png'; // Import the logo
 const ProductList = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedBoot, setSelectedBoot] = useState(null);
   const [isAddingReview, setIsAddingReview] = useState(false);
-  const products = useSelector(state => state.data.products);
+  const products = useSelector(state => {
+    console.log('Current products in Redux store:', state.data.products);
+    return state.data.products;
+  });
   const dispatch = useDispatch();
   const reviewCounts = useSelector(state => state.reviews.counts);
 
@@ -60,16 +61,6 @@ const ProductList = () => {
     setEditingProduct(null);
   };
 
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    dispatch(fetchProducts(`search=${term}`));
-  };
-
-  const handleReviewClick = (bootId) => {
-    setSelectedBoot(bootId);
-    setIsAddingReview(false);
-  };
-
   const handleAddReviewClick = (bootId) => {
     setSelectedBoot(bootId);
     setIsAddingReview(true);
@@ -79,12 +70,6 @@ const ProductList = () => {
     return <div>Loading...</div>;
   }
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.color.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div className="product-list-container">
       <div className="product-list-header">
@@ -93,8 +78,9 @@ const ProductList = () => {
           <ProductForm product={editingProduct} onSubmit={handleSubmit} />
         </div>
       </div>
-      <SearchAndFilter onSearch={handleSearch} />
-      {filteredProducts.length === 0 ? (
+      <SearchAndFilter />
+      {console.log('SearchAndFilter component rendered')}
+      {products.length === 0 ? (
         <p>No products found.</p>
       ) : (
         <table className="table">
@@ -109,7 +95,7 @@ const ProductList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.map(product => (
+            {products.map(product => (
               <tr key={product.id}>
                 <td>{product.name}</td>
                 <td>{product.brand}</td>

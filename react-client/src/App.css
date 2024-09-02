@@ -291,8 +291,6 @@ form button:hover {
   }
 }
 
-/* Add these styles to your App.css or the relevant CSS file */
-
 .review-list {
   display: flex !important;
   flex-direction: column !important;

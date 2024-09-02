@@ -4,23 +4,27 @@
 const getToken = () => localStorage.getItem('token');
 
 // Action to fetch products from an API
-export const fetchProducts = (searchParams = '') => async (dispatch) => {
-    console.log('fetchProducts action called with params:', searchParams);
+export const fetchProducts = (queryString = '') => async (dispatch) => {
+    console.log('fetchProducts action called with query:', queryString);
+    dispatch({ type: 'FETCH_PRODUCTS_REQUEST' });
     try {
-        const response = await fetch(`http://localhost:5000/products?${searchParams}`, {
+        const url = `http://localhost:5000/products?${queryString}`;
+        console.log('Fetching products from URL:', url);
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${getToken()}`
             }
         });
         if (!response.ok) {
-            throw new Error('Failed to fetch products');
+            throw new Error(`Failed to fetch products: ${response.statusText}`);
         }
         const data = await response.json();
         console.log('Data received from server:', JSON.stringify(data, null, 2));
-        dispatch({ type: 'SET_PRODUCTS', payload: data });
-        console.log('SET_PRODUCTS action dispatched');
+        dispatch({ type: 'FETCH_PRODUCTS_SUCCESS', payload: data });
+        console.log('FETCH_PRODUCTS_SUCCESS action dispatched with payload:', JSON.stringify(data, null, 2));
     } catch (error) {
         console.error('Error fetching products:', error);
+        dispatch({ type: 'FETCH_PRODUCTS_FAILURE', payload: error.message });
     }
 };
 
