@@ -13,38 +13,47 @@ export const login = (username, password) => async (dispatch) => {
             dispatch({ type: 'LOGIN_SUCCESS', payload: data.user });
             // Store the token in localStorage
             localStorage.setItem('token', data.token);
+            return true; // Indicate successful login
         } else {
             // If login fails, dispatch LOGIN_FAILURE
             dispatch({ type: 'LOGIN_FAILURE', payload: data.message });
+            return false; // Indicate failed login
         }
     } catch (error) {
         console.error('Login error:', error);
         dispatch({ type: 'LOGIN_FAILURE', payload: 'An error occurred during login' });
+        return false; // Indicate failed login
     }
 };
 
 export const register = (username, password) => async (dispatch) => {
     try {
-        // Make an API call to your backend
+        console.log('Attempting to register user:', username);
         const response = await fetch('http://localhost:5000/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
         const data = await response.json();
+        console.log('Registration response:', response.status, data);
 
         if (response.ok) {
             // If registration is successful, dispatch REGISTER_SUCCESS
             dispatch({ type: 'REGISTER_SUCCESS', payload: data.user });
             // Store the token in localStorage
             localStorage.setItem('token', data.token);
+            // Automatically log in the user after successful registration
+            dispatch({ type: 'LOGIN_SUCCESS', payload: data.user });
+            return true;
         } else {
-            // If registration fails, dispatch REGISTER_FAILURE
-            dispatch({ type: 'REGISTER_FAILURE', payload: data.message });
+            console.error('Registration failed:', data);
+            dispatch({ type: 'REGISTER_FAILURE', payload: data.message || 'Registration failed' });
+            return false;
         }
     } catch (error) {
         console.error('Registration error:', error);
         dispatch({ type: 'REGISTER_FAILURE', payload: 'An error occurred during registration' });
+        return false;
     }
 };
 

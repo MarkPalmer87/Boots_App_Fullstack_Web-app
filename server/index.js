@@ -34,14 +34,25 @@ app.use((req, res, next) => {
 // Register route
 app.post('/register', async (req, res) => {
   try {
+    console.log('Received registration request:', req.body);
     const { username, password } = req.body;
+    
+    // Check if username already exists
+    const [existingUsers] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+    if (existingUsers.length > 0) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+    
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    await pool.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]);
+    const [result] = await pool.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]);
     
-    res.status(201).json({ message: 'User registered successfully' });
+    const token = jwt.sign({ id: result.insertId, username }, JWT_SECRET, { expiresIn: '1h' });
+    
+    res.status(201).json({ message: 'User registered successfully', token, user: { id: result.insertId, username } });
   } catch (error) {
-    res.status(500).json({ message: 'Error registering user' });
+    console.error('Detailed registration error:', error);
+    res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 });
 

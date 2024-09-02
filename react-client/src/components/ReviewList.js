@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchReviews } from '../actions/reviewActions';
 
+
 const ReviewList = ({ bootId }) => {
     const dispatch = useDispatch();
-    const reviews = useSelector(state => state.reviews[bootId] || []);
+    const reviews = useSelector(state => state.reviews.reviews[bootId] || []);
 
     useEffect(() => {
         console.log('Fetching reviews for boot:', bootId);
@@ -19,12 +20,16 @@ const ReviewList = ({ bootId }) => {
 
     return (
         <div className="review-list">
-            <h3>Reviews</h3>
+            <h2>Reviews for Boot {bootId}</h2>
             {reviews.map(review => (
                 <div key={review.id} className="review-item">
-                    <p>Rating: {review.rating}/5</p>
-                    <p>{review.comment}</p>
-                    <p>By {review.username} on {new Date(review.created_at).toLocaleDateString()}</p>
+                    <h3>{review.title}</h3>
+                    <p>{review.content}</p>
+                    <div className="review-meta">
+                        <span>Rating: {review.rating}/5</span>
+                        <span> | By: {review.user_name}</span>
+                        <span> | Date: {new Date(review.created_at).toLocaleDateString()}</span>
+                    </div>
                 </div>
             ))}
         </div>

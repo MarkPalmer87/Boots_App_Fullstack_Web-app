@@ -22,19 +22,23 @@ const Reviews = () => {
         <div>
             <h2>Reviews for {boot ? boot.name : 'Boot'}</h2>
             <Link to="/products">Back to Products</Link>
-            {reviews.length === 0 ? (
-                <p>No reviews yet.</p>
-            ) : (
-                <ul>
-                    {reviews.map(review => (
-                        <li key={review.id}>
-                            <p>Rating: {review.rating}/5</p>
+            <div className="review-list">
+                {reviews.length === 0 ? (
+                    <p>No reviews yet.</p>
+                ) : (
+                    reviews.map(review => (
+                        <div key={review.id} className="review-item">
+                            <h3>Review #{review.id}</h3>
                             <p>{review.comment}</p>
-                            <p>By {review.username} on {new Date(review.created_at).toLocaleDateString()}</p>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                            <div className="review-meta">
+                                <span>Rating: {review.rating}/5</span>
+                                <span> | By: {review.username}</span>
+                                <span> | Date: {new Date(review.created_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
             <AddReviewForm bootId={bootId} />
         </div>
     );

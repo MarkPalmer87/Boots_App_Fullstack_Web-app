@@ -7,6 +7,7 @@ import ReviewList from './ReviewList';
 import { fetchReviewCounts } from '../actions/reviewActions';
 import AddReviewForm from './AddReviewForm';
 import SearchAndFilter from './SearchAndFilter';
+import logo from '../images/Boots.png'; // Import the logo
 
 const ProductList = () => {
   const [editingProduct, setEditingProduct] = useState(null);
@@ -35,7 +36,7 @@ const ProductList = () => {
       }
     };
     fetchData();
-  }, [dispatch]); // Remove reviewCounts from the dependency array
+  }, [dispatch]);
 
   useEffect(() => {
     console.log('ProductList: Current review counts:', reviewCounts);
@@ -85,8 +86,13 @@ const ProductList = () => {
   );
 
   return (
-    <div>
-      <h2>Product List</h2>
+    <div className="product-list-container">
+      <div className="product-list-header">
+        <img src={logo} alt="Boots Logo" className="header-logo" />
+        <div className="add-item-container">
+          <ProductForm product={editingProduct} onSubmit={handleSubmit} />
+        </div>
+      </div>
       <SearchAndFilter onSearch={handleSearch} />
       {filteredProducts.length === 0 ? (
         <p>No products found.</p>
@@ -135,7 +141,6 @@ const ProductList = () => {
           />
         </div>
       )}
-      <ProductForm product={editingProduct} onSubmit={handleSubmit} />
     </div>
   );
 };
